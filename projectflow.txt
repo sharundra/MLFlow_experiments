@@ -1,0 +1,17 @@
+1. Create a repo and clone it in local.
+2. Install mlflow -- "pip install mlflow"
+3. Run this command in terminal -- "mlflow ui" -- it launches local web server on port 5000, an mlflow tracking ui, that lets us visually compare ML experiments.
+    # access the server on browser -- localhost:5000
+4. Create src folder and a python file ml_exp1.py inside it. 
+    # import mlflow and log the parameters and metrics in mlflow to track them on ui. Run the code and check the ui.
+5. Update the code to log artifacts also such as confusion_matrix.png and the file itself.
+    # By default, tracking URI is set to local file path, while mlflow artifact store expects http server based URI hence use this line of code in the beginning of script to set the correct tracking URI -- mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # TO delete one specific experiment, prefer deleting from local instead of mlflow UI because deleting from local deletes tbe experiment in the UI also but vice versa doesn't happen.
+6. Ways of creating an experiment --
+    a. Create one new experiment in the UI itself and use this line of code to put different 'runs' of code to inside this experiment -- mlflow.set_experiment('MLOPS-mlflow-Exp2')
+    b. Or Mention the experiment_id from the UI like this in the code -- 
+        with mlflow.start_run(experiment_id = '750913064434622423'):
+            pass
+    c. Or Directly mention a brand new experiment name in the code itself and it will get created in hte Ui also.
+7. Update the code to set the tag and log the model.
+
