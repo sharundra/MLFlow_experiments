@@ -1,3 +1,4 @@
+Tracking ML experiments at local MLFlow tracking server:
 1. Create a repo and clone it in local.
 2. Install mlflow -- "pip install mlflow"
 3. Run this command in terminal -- "mlflow ui" -- it launches local web server on port 5000, an mlflow tracking ui, that lets us visually compare ML experiments.
@@ -6,6 +7,8 @@
     # import mlflow and log the parameters and metrics in mlflow to track them on ui. Run the code and check the ui.
 5. Update the code to log artifacts also such as confusion_matrix.png and the file itself.
     # By default, tracking URI is set to local file path, while mlflow artifact store expects http server based URI hence use this line of code in the beginning of script to set the correct tracking URI -- mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # Tracking URI -- the address where MLFlow stores experiment, metadata and artifacts (http://127.0.0.1:5000)
+    # Tracking API -- the MLFlow interface (mlflow.log_*) that talks to this URI.
     # TO delete one specific experiment, prefer deleting from local instead of mlflow UI because deleting from local deletes tbe experiment in the UI also but vice versa doesn't happen.
 6. Ways of creating an experiment --
     a. Create one new experiment in the UI itself and use this line of code to put different 'runs' of code to inside this experiment -- mlflow.set_experiment('MLOPS-mlflow-Exp2')
@@ -14,4 +17,32 @@
             pass
     c. Or Directly mention a brand new experiment name in the code itself and it will get created in hte Ui also.
 7. Update the code to set the tag and log the model.
+
+Tracking ML experiments on remote tracking server:
+1. Signup at DAGsHub
+    # An MLOps platform (preferred for team collaboration) built on top of Git and DVC, which provides tools for version control of data and models, experiment tracking. 
+    # It hosts git repos, integrates with DVC, provides a UI to log, compare and visualize ML epxeriments, a centralized place to manage, version and share trained ML models.
+    # AWS provides individual services (CodeCommit, S3, ECR etc.) which have to be stitched together to build MLOps pipeline. Hence DAGsHub is preferred for MLOps.
+2. Integrate existing git repo in DAGsHub. Then go to remote -> experiments and copy "MLFlow tracking remote" URL.
+3. Create a copy of existing ml_exp1.py as ml_exp2.py and use the "MLFlow tracking remote" URL to update "mlflow.set_tracking_uri()" line of code.
+    a. Also, copy dagshub.init() line of code and put it in the beginning of ml_exp2.py
+4. Change this line of code, "mlflow.sklearn.log_model(rf, "Random-Forest-Model")" to 
+    # mlflow.sklearn.log_model(rf, "Random-Forest-Model")
+    with open("Random-Forest-Model.pkl", "wb") as f:
+        pickle.dump(rf, f)
+
+    # Log the pickle file as artifact (DagsHub supports this)
+    mlflow.log_artifact("Random-Forest-Model.pkl")
+        # The newer versions of MLflow (especially ≥2.9) changed how model logging works internally. Older MLflow versions (e.g., 2.3–2.8) treated model logging as a “file artifact” upload, while newer versions route that same call through the "Model Registry API endpoints" (like /api/2.0/mlflow/registered-models/...).
+        # DagsHub’s MLflow integration currently supports, tracking API endpoints (metrics, params, artifacts, runs) and Experiment management but it does not yet fully support the "Model Registry API endpoints" hence we track the models on dagshub as artifact.
+5. Install dagshub in venv -- "pip install dagshub"
+6. Run the code and see the experiment on dashub's mlflow ui.
+
+Autologging parameters:
+# AN mlflow feature that can be run at local or remote server either.
+1. Copy previous code in a new file, ml_autolog_exp.py and add this line in the code, "mlflow.autolog()". Also, remove lines which specifically log parameters. And then run the code.
+# We still can specifically log some extra desired artifacts.
+
+
+
 
