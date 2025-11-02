@@ -11,11 +11,11 @@ Tracking ML experiments at local MLFlow tracking server:
     # Tracking API -- the MLFlow interface (mlflow.log_*) that talks to this URI.
     # TO delete one specific experiment, prefer deleting from local instead of mlflow UI because deleting from local deletes tbe experiment in the UI also but vice versa doesn't happen.
 6. Ways of creating an experiment --
-    a. Create one new experiment in the UI itself and use this line of code to put different 'runs' of code to inside this experiment -- mlflow.set_experiment('MLOPS-mlflow-Exp2')
+    a. Create one new experiment in the UI itself and use this line of code to put different 'runs' of code inside this experiment -- mlflow.set_experiment('MLOPS-mlflow-Exp2')
     b. Or Mention the experiment_id from the UI like this in the code -- 
         with mlflow.start_run(experiment_id = '750913064434622423'):
             pass
-    c. Or Directly mention a brand new experiment name in the code itself and it will get created in hte Ui also.
+    c. Or Directly mention a brand new experiment name in the code itself and it will get created in the Ui also.
 7. Update the code to set the tag and log the model.
 
 Tracking ML experiments on remote tracking server:
@@ -25,9 +25,8 @@ Tracking ML experiments on remote tracking server:
     # AWS provides individual services (CodeCommit, S3, ECR etc.) which have to be stitched together to build MLOps pipeline. Hence DAGsHub is preferred for MLOps.
 2. Integrate existing git repo in DAGsHub. Then go to remote -> experiments and copy "MLFlow tracking remote" URL.
 3. Create a copy of existing ml_exp1.py as ml_exp2.py and use the "MLFlow tracking remote" URL to update "mlflow.set_tracking_uri()" line of code.
-    a. Also, copy dagshub.init() line of code and put it in the beginning of ml_exp2.py
-4. Change this line of code, "mlflow.sklearn.log_model(rf, "Random-Forest-Model")" to 
-    # mlflow.sklearn.log_model(rf, "Random-Forest-Model")
+    a. Also, in the beginning of ml_exp2.py, put "dagshub.init()" line of code.
+4. Change this line of code, "mlflow.sklearn.log_model(rf, "Random-Forest-Model")" to
     with open("Random-Forest-Model.pkl", "wb") as f:
         pickle.dump(rf, f)
 
@@ -42,6 +41,19 @@ Autologging parameters:
 # AN mlflow feature that can be run at local or remote server either.
 1. Copy previous code in a new file, ml_autolog_exp.py and add this line in the code, "mlflow.autolog()". Also, remove lines which specifically log parameters. And then run the code.
 # We still can specifically log some extra desired artifacts.
+
+Hypertuning parameter logging:
+1. Use Grid search CV based script for hypertuning. 
+    a. Also, record the accuracy of all combinations of paramters in MLFlow(either local or remote MLFlow server) as parent-child thread.
+        # To see all the child runs, click on the plus icon of main run of experiment.
+        # then, select all the checkboxes in left, and then other options will pop up like "compare" and then all parameter's performance can be compared
+
+Model Registry --
+# MLFlow provides the option of regitering models (if they have been logged). 
+# Registered models can be put into different stages (staging, production, archive) and there couold be different versions of same model.
+1. On MLFlow UI -- Go to models,m then choose "register/create model".
+
+
 
 
 

@@ -47,7 +47,7 @@ mlflow.set_experiment('breast-cancer-rf-hp')
 with mlflow.start_run() as parent:
     grid_search.fit(X_train, y_train)
 
-    # log all the child runs
+    #log all the child runs
     for i in range(len(grid_search.cv_results_['params'])):
 
         with mlflow.start_run(nested=True) as child:
@@ -93,7 +93,7 @@ with mlflow.start_run() as parent:
     mlflow.log_artifact("Random-Forest-Model.pkl")
 
     # Set tags
-    mlflow.set_tag("author", "Vikash Das")
+    mlflow.set_tag("author", "Sharad")
 
     print(best_params)
     print(best_score)
